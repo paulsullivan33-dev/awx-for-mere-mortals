@@ -1,0 +1,25 @@
+$ ansible-playbook -i inventory.ini site.yml --syntax-check
+
+playbook: site.yml
+
+$ ansible-playbook -i inventory.ini site.yml --list-hosts
+
+playbook: site.yml
+
+  play #1 (webservers): Roll the status-page configuration to the web servers	TAGS: []
+    pattern: ['webservers']
+    hosts (2):
+      northlight-web-01
+      northlight-web-02
+
+$ ansible-playbook -i inventory.ini site.yml --list-tasks
+
+playbook: site.yml
+
+  play #1 (webservers): Roll the status-page configuration to the web servers	TAGS: []
+    tasks:
+      Ensure the application directory exists	TAGS: []
+      Deploy the application configuration	TAGS: []
+      Deploy the login banner	TAGS: []
+      Note this host in the rollout checklist	TAGS: []
+      Report what this host now runs	TAGS: []

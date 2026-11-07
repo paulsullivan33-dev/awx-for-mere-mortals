@@ -1,0 +1,29 @@
+$ awx --conf.host https://127.0.0.1:18082 -k ping
+(127.0.0.1:18082 is this lab's assigned loopback port; nothing listens there,
+ because no AWX server ran in this lab -- that is the point of the test.)
+
+There was a network error of some kind trying to reach https://127.0.0.1:18082.
+You might need to specify (or double-check) --conf.host
+
+HTTPSConnectionPool(host='127.0.0.1', port=18082): Max retries exceeded with url: /api/ (Caused by NewConnectionError("HTTPSConnection(host='127.0.0.1', port=18082): Failed to establish a new connection: [Errno 111] Connection refused"))
+usage: awx [--help] [--version] [--conf.host https://example.awx.org]
+           [--conf.token TEXT] [--conf.username TEXT] [--conf.password TEXT]
+           [-k] [-f {json,yaml,jq,human}] [--filter TEXT]
+           [--conf.color BOOLEAN] [-v]
+
+options:
+  --help                prints usage information for the awx tool
+
+$ awx users list   (default host https://127.0.0.1:443)
+
+There was a network error of some kind trying to reach https://127.0.0.1:443.
+You might need to specify (or double-check) --conf.host
+
+HTTPSConnectionPool(host='127.0.0.1', port=443): Max retries exceeded with url: /api/ (Caused by NewConnectionError("HTTPSConnection(host='127.0.0.1', port=443): Failed to establish a new connection: [Errno 111] Connection refused"))
+usage: awx [--help] [--version] [--conf.host https://example.awx.org]
+           [--conf.token TEXT] [--conf.username TEXT] [--conf.password TEXT]
+           [-k] [-f {json,yaml,jq,human}] [--filter TEXT]
+           [--conf.color BOOLEAN] [-v]
+
+options:
+  --help                prints usage information for the awx tool

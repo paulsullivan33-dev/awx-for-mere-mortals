@@ -1,0 +1,72 @@
+AWX — the distilled commands
+====================================================================
+Placeholders: <venv> is the folder of the Python virtual
+environment from chapter 3; <host> is an AWX server address
+of yours. Commands marked LIVE were run in this guide's lab
+(transcripts in awx-lab/transcripts/). Commands marked
+DOCUMENTED-ONLY are from the official documentation and the
+operator release; no AWX server ran in this lab.
+
+THE ENGINE (chapters 3-5) — LIVE
+--------------------------------------------------------------------
+  python3 -m venv <venv>
+  <venv>/bin/pip install ansible-core
+                                   # ansible-core 2.21.6 in the lab
+  <venv>/bin/ansible --version    # the check every install
+                                   # must pass
+  ansible webservers -i inventory.ini -m ping
+                                   # both fictional hosts: "pong"
+  ansible-playbook -i inventory.ini site.yml --syntax-check
+  ansible-playbook -i inventory.ini site.yml --list-hosts
+  ansible-playbook -i inventory.ini site.yml --list-tasks
+  ansible-playbook -i inventory.ini site.yml --forks 1
+                                   # first run:  ok=7 changed=5
+                                   # second run: ok=6 changed=0
+                                   # after one variable change:
+                                   #             ok=7 changed=2
+
+THE CLIENT (chapters 3 and 11) — LIVE, against no server
+--------------------------------------------------------------------
+  <venv>/bin/pip install awxkit   # awxkit 24.6.1 in the lab
+  <venv>/bin/pip install 'setuptools<81'
+                                   # REQUIRED with awxkit 24.6.1
+                                   # today: it imports
+                                   # pkg_resources, which newer
+                                   # setuptools no longer ships
+  awx --help                       # the client's whole surface
+  awx --version                    # 24.6.1 — the CLIENT's version
+  awx config                       # confesses its defaults:
+                                   # https://127.0.0.1:443,
+                                   # admin / password (placeholders)
+  CONTROLLER_HOST=https://127.0.0.1:18082 awx config
+                                   # the environment is honoured
+  awx --conf.host https://127.0.0.1:18082 -k ping
+                                   # in this lab: Connection
+                                   # refused at /api/ — no server
+                                   # ran. Against your server, the
+                                   # same shape reaches it.
+
+THE CLIENT AGAINST A REAL SERVER — DOCUMENTED-ONLY
+--------------------------------------------------------------------
+  awx --conf.host <host> login --conf.username <you>
+                                   # exchange credentials for an
+                                   # OAuth2 token
+  awx --conf.host <host> job_templates list
+  awx --conf.host <host> job_templates launch <id>
+  awx --conf.host <host> jobs list
+  awx export / awx import          # move resource sets between
+                                   # servers
+
+INSTALLING AWX ITSELF (chapter 13) — DOCUMENTED-ONLY
+--------------------------------------------------------------------
+  # On a Kubernetes cluster you already run, per the operator's
+  # docs/installation/basic-install.md (operator 2.19.1):
+  kubectl apply -k .               # deploy the operator by
+                                   # Kustomize (or use Helm)
+  # then declare an AWX — the release's own awx-demo.yml:
+  #   apiVersion: awx.ansible.com/v1beta1
+  #   kind: AWX
+  #   metadata: { name: awx-demo }
+  #   spec: { service_type: nodeport }
+  kubectl apply -f awx-demo.yml
+  kubectl get pods -n awx          # watch the operator build it

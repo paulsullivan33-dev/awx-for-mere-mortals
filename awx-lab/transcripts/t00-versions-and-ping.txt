@@ -1,0 +1,42 @@
+$ ansible --version
+ansible [core 2.21.6]
+  config file = None
+  configured module search path = ['/home/hatch/.ansible/plugins/modules', '/usr/share/ansible/plugins/modules']
+  ansible python module location = /home/hatch/workspace/.batch-351-363/scratch-awx/venv/lib/python3.12/site-packages/ansible
+  ansible collection location = /home/hatch/.ansible/collections:/usr/share/ansible/collections
+  executable location = /home/hatch/workspace/.batch-351-363/scratch-awx/venv/bin/ansible
+  python version = 3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0] (/home/hatch/workspace/.batch-351-363/scratch-awx/venv/bin/python3)
+  jinja version = 3.1.6
+  pyyaml version = 6.0.3 (with libyaml v0.2.5)
+
+$ ansible-playbook --version
+ansible-playbook [core 2.21.6]
+  config file = None
+  configured module search path = ['/home/hatch/.ansible/plugins/modules', '/usr/share/ansible/plugins/modules']
+  ansible python module location = /home/hatch/workspace/.batch-351-363/scratch-awx/venv/lib/python3.12/site-packages/ansible
+  ansible collection location = /home/hatch/.ansible/collections:/usr/share/ansible/collections
+  executable location = /home/hatch/workspace/.batch-351-363/scratch-awx/venv/bin/ansible-playbook
+  python version = 3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0] (/home/hatch/workspace/.batch-351-363/scratch-awx/venv/bin/python3)
+  jinja version = 3.1.6
+  pyyaml version = 6.0.3 (with libyaml v0.2.5)
+
+$ python3 --version (the venv interpreter)
+Python 3.12.3
+
+$ ansible webservers -i inventory.ini -m ping
+[WARNING]: Host 'northlight-web-02' is using the discovered Python interpreter at '/home/hatch/workspace/.batch-351-363/scratch-awx/venv/bin/python3.12', but future installation of another Python interpreter could cause a different interpreter to be discovered. See https://docs.ansible.com/ansible-core/2.21/reference_appendices/interpreter_discovery.html for more information.
+[WARNING]: Host 'northlight-web-01' is using the discovered Python interpreter at '/home/hatch/workspace/.batch-351-363/scratch-awx/venv/bin/python3.12', but future installation of another Python interpreter could cause a different interpreter to be discovered. See https://docs.ansible.com/ansible-core/2.21/reference_appendices/interpreter_discovery.html for more information.
+northlight-web-02 | SUCCESS => {
+    "ansible_facts": {
+        "discovered_interpreter_python": "/home/hatch/workspace/.batch-351-363/scratch-awx/venv/bin/python3.12"
+    },
+    "changed": false,
+    "ping": "pong"
+}
+northlight-web-01 | SUCCESS => {
+    "ansible_facts": {
+        "discovered_interpreter_python": "/home/hatch/workspace/.batch-351-363/scratch-awx/venv/bin/python3.12"
+    },
+    "changed": false,
+    "ping": "pong"
+}

@@ -1,0 +1,48 @@
+---
+# Northlight Hosting Co-op -- roll a small config change to the
+# fictional web servers. This is the kind of playbook AWX exists
+# to schedule and guard. It runs unchanged with plain Ansible,
+# which is the point: AWX adds control around the run, not new
+# ability inside it.
+- name: Roll the status-page configuration to the web servers
+  hosts: webservers
+  gather_facts: true
+  vars:
+    output_dir: "{{ playbook_dir }}/output/{{ inventory_hostname }}"
+  tasks:
+    - name: Ensure the application directory exists
+      ansible.builtin.file:
+        path: "{{ output_dir }}"
+        state: directory
+        mode: "0755"
+
+    - name: Deploy the application configuration
+      ansible.builtin.template:
+        src: app.conf.j2
+        dest: "{{ output_dir }}/app.conf"
+        mode: "0644"
+      notify: Record a service restart
+
+    - name: Deploy the login banner
+      ansible.builtin.template:
+        src: banner.txt.j2
+        dest: "{{ output_dir }}/banner.txt"
+        mode: "0644"
+
+    - name: Note this host in the rollout checklist
+      ansible.builtin.lineinfile:
+        path: "{{ playbook_dir }}/output/rollout-checklist.txt"
+        line: "{{ inventory_hostname }} configured by Ansible"
+        create: true
+        mode: "0644"
+
+    - name: Report what this host now runs
+      ansible.builtin.debug:
+        msg: "{{ inventory_hostname }}: {{ app_name }} on port {{ app_port }} ({{ release_channel }})"
+
+  handlers:
+    - name: Record a service restart
+      ansible.builtin.copy:
+        content: "restart recorded for {{ inventory_hostname }} at {{ ansible_facts['date_time']['iso8601'] }}\n"
+        dest: "{{ output_dir }}/restart-marker.txt"
+        mode: "0644"

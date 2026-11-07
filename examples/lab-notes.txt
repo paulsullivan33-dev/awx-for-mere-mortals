@@ -1,0 +1,79 @@
+The lab — the engine and the client for real, the server read
+====================================================================
+
+This lab is shaped by an honesty rule: AWX itself never ran
+here. The full product needs a Kubernetes cluster; this build
+machine (an Ubuntu 24.04 sandbox) has none, and the lab did
+not fake one. What it ran is everything around that absence
+that can be run truthfully, and what it read is the real
+release. Python 3.12 throughout.
+
+  * The engine, live: ansible-core 2.21.6, installed from
+    PyPI into a virtual environment in the lab's scratch
+    area (pip resolved ansible-core-2.21.6, Jinja 3.1.6,
+    PyYAML 6.0.3), run against a fresh copy of the fixture
+    project for every driver run, so the checkout's fixtures
+    stay clean.
+
+  * The fixture project (fixtures/northlight/): the
+    Northlight Hosting Co-op, invented entire. An inventory
+    of two fictional web servers pointing at 127.0.0.1 with
+    a local connection; group variables (co-op name, app
+    name, port 8080 as a config value — nothing listens
+    anywhere in this lab — release channel); two templates
+    (app.conf, banner); and site.yml: five tasks (directory,
+    two templates, a checklist line, a report) and one
+    handler that records a service restart when the
+    configuration task notifies it. Runs used --forks 1 so
+    the two local "hosts" take turns on the shared checklist
+    file; real separate hosts would not need it.
+
+  * The measured spine (transcripts t00-t04): ping "pong"
+    from both hosts; syntax check clean; first run ok=7
+    changed=5 per host (handler included); second identical
+    run ok=6 changed=0 (handler absent, as designed); third
+    run after release_channel stable->beta, ok=7 changed=2
+    — the one template using the variable, plus its handler.
+
+  * The client, live (t05-t07): awxkit 24.6.1 from PyPI.
+    --help in full; --version answering 24.6.1; config
+    confessing defaults (https://127.0.0.1:443, admin /
+    password placeholders) and honouring CONTROLLER_HOST;
+    and ping / users list against the lab's assigned
+    loopback port 18082 and the default 443, both refused —
+    verbatim, because the refusal is the evidence.
+
+  * The client, broken first (t08): in a fresh environment
+    awxkit failed with ModuleNotFoundError: pkg_resources —
+    pip had resolved setuptools 84.2.1, which no longer
+    ships that module. Pinning setuptools<81 fixed it, and
+    the failure was reproduced in a second fresh venv
+    before the guide trusted the diagnosis.
+
+  * The server, read (t09): awx-operator-2.19.1.tar.gz
+    from the ansible/awx-operator GitHub releases (the
+    operator released with AWX 24.6.1), inspected by
+    drivers/inspect-operator.sh: the awx-demo custom
+    resource, four CRDs (the AWX CRD is 2,054 lines), the
+    installer defaults (images quay.io/ansible/awx,
+    quay.io/ansible/awx-ee, docker.io/redis:7,
+    quay.io/sclorg/postgresql-15-c9s; replicas 1; requests
+    web/task 100m+128Mi, EE 100m+64Mi, Redis 50m+64Mi,
+    PostgreSQL 10m+64Mi and 8Gi storage; projects 8Gi
+    ReadWriteMany, persistence off by default; admin_user
+    admin), and the web/task/postgres templates. The AWX
+    24.6.1 source archive was also downloaded and its docs
+    read. GitHub's API was rate-limited during this batch;
+    both archives came from the plain release download
+    URLs, which worked.
+
+  * Drivers (drivers/): run-ansible-lab.sh,
+    run-awxkit-lab.sh, inspect-operator.sh — each takes the
+    venv or operator path as an argument and writes the
+    transcripts the chapters cite.
+
+  * One correction kept on record: the playbook's handler
+    first used the ansible_date_time fact spelling, which
+    ansible-core 2.21.6 deprecates for removal in 2.24. It
+    was rewritten to ansible_facts['date_time'] and the
+    entire lab re-run, so no transcript carries the warning.

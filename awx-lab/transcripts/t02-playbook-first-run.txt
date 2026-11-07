@@ -1,0 +1,63 @@
+FIRST RUN
+$ ansible-playbook -i inventory.ini site.yml --forks 1
+
+PLAY [Roll the status-page configuration to the web servers] *******************
+
+TASK [Gathering Facts] *********************************************************
+[WARNING]: Host 'northlight-web-01' is using the discovered Python interpreter at '/home/hatch/workspace/.batch-351-363/scratch-awx/venv/bin/python3.12', but future installation of another Python interpreter could cause a different interpreter to be discovered. See https://docs.ansible.com/ansible-core/2.21/reference_appendices/interpreter_discovery.html for more information.
+[WARNING]: Host 'northlight-web-02' is using the discovered Python interpreter at '/home/hatch/workspace/.batch-351-363/scratch-awx/venv/bin/python3.12', but future installation of another Python interpreter could cause a different interpreter to be discovered. See https://docs.ansible.com/ansible-core/2.21/reference_appendices/interpreter_discovery.html for more information.
+ok: [northlight-web-01]
+ok: [northlight-web-02]
+
+TASK [Ensure the application directory exists] *********************************
+changed: [northlight-web-01]
+changed: [northlight-web-02]
+
+TASK [Deploy the application configuration] ************************************
+changed: [northlight-web-01]
+changed: [northlight-web-02]
+
+TASK [Deploy the login banner] *************************************************
+changed: [northlight-web-01]
+changed: [northlight-web-02]
+
+TASK [Note this host in the rollout checklist] *********************************
+changed: [northlight-web-01]
+changed: [northlight-web-02]
+
+TASK [Report what this host now runs] ******************************************
+ok: [northlight-web-01] => {
+    "msg": "northlight-web-01: northlight-status-page on port 8080 (stable)"
+}
+ok: [northlight-web-02] => {
+    "msg": "northlight-web-02: northlight-status-page on port 8080 (stable)"
+}
+
+RUNNING HANDLER [Record a service restart] *************************************
+changed: [northlight-web-01]
+changed: [northlight-web-02]
+
+PLAY RECAP *********************************************************************
+northlight-web-01          : ok=7    changed=5    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+northlight-web-02          : ok=7    changed=5    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+
+
+Files the first run produced (under output/):
+output/northlight-web-01/app.conf
+output/northlight-web-01/banner.txt
+output/northlight-web-01/restart-marker.txt
+output/northlight-web-02/app.conf
+output/northlight-web-02/banner.txt
+output/northlight-web-02/restart-marker.txt
+output/rollout-checklist.txt
+
+--- output/northlight-web-01/app.conf ---
+# northlight-status-page -- rendered by Ansible for northlight-web-01
+# Managed file. Edits by hand will be replaced on the next run.
+app_name=northlight-status-page
+listen_port=8080
+release_channel=stable
+operator=Northlight Hosting Co-op
+--- output/rollout-checklist.txt ---
+northlight-web-01 configured by Ansible
+northlight-web-02 configured by Ansible

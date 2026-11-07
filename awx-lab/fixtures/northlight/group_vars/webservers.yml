@@ -1,0 +1,9 @@
+# Variables for the fictional Northlight web servers.
+# In AWX these would be inventory or job-template variables;
+# here they are plain group variables, because the playbook is
+# the thing that runs either way.
+coop_name: Northlight Hosting Co-op
+app_name: northlight-status-page
+app_port: 8080
+release_channel: stable
+banner_text: Managed by the Northlight Hosting Co-op

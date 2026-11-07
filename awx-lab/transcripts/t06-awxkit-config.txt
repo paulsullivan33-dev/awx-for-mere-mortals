@@ -1,0 +1,25 @@
+$ awx config   (no server configured, no environment set)
+{
+     "base_url": "https://127.0.0.1:443",
+     "token": "",
+     "use_sessions": false,
+     "credentials": {
+          "default": {
+               "username": "admin",
+               "password": "password"
+          }
+     }
+}
+
+$ CONTROLLER_HOST=https://127.0.0.1:18082 awx config
+{
+     "base_url": "https://127.0.0.1:18082",
+     "token": "",
+     "use_sessions": false,
+     "credentials": {
+          "default": {
+               "username": "admin",
+               "password": "password"
+          }
+     }
+}

@@ -1,0 +1,25 @@
+FIRST ATTEMPT -- awxkit 24.6.1 in a fresh venv, before any fix
+$ python3 -m venv awxkit-fresh && awxkit-fresh/bin/pip install awxkit
+(pip resolved setuptools 84.2.1 as part of the install)
+
+$ awxkit-fresh/bin/pip show setuptools awxkit | grep -E "^(Name|Version)"
+Name: setuptools
+Version: 84.2.1
+Name: awxkit
+Version: 24.6.1
+
+$ awxkit-fresh/bin/awx --help
+Traceback (most recent call last):
+  File "/home/hatch/workspace/.batch-351-363/scratch-awx/awxkit-fresh/bin/awx", line 5, in <module>
+    from awxkit.cli import run
+  File "/home/hatch/workspace/.batch-351-363/scratch-awx/awxkit-fresh/lib/python3.12/site-packages/awxkit/cli/__init__.py", line 9, in <module>
+    from .client import CLI
+  File "/home/hatch/workspace/.batch-351-363/scratch-awx/awxkit-fresh/lib/python3.12/site-packages/awxkit/cli/client.py", line 5, in <module>
+    import pkg_resources
+ModuleNotFoundError: No module named 'pkg_resources'
+
+THE FIX APPLIED IN THE MAIN LAB VENV:
+$ pip install "setuptools<81"   # awxkit 24.6.1 imports pkg_resources,
+# which setuptools 81 and later no longer ship. After the pin,
+# awx --help works (transcript t05) with a deprecation warning
+# that itself says to pin Setuptools<81.

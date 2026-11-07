@@ -1,0 +1,187 @@
+Operator tree: /home/hatch/workspace/.batch-351-363/scratch-awx/awx-operator-2.19.1 (awx-operator 2.19.1, released with AWX 24.6.1)
+
+== Top level ==
+CHANGELOG.md
+CONTRIBUTING.md
+Dockerfile
+LICENSE
+Makefile
+PROJECT
+README.md
+SECURITY.md
+ansible
+awx-demo.yml
+awxmeshingress-demo.yml
+config
+docs
+hack
+mkdocs.yml
+molecule
+noxfile.py
+playbooks
+projects
+requirements.yml
+roles
+vendor
+watches.yaml
+
+== awx-demo.yml -- the smallest AWX custom resource in the release ==
+---
+apiVersion: awx.ansible.com/v1beta1
+kind: AWX
+metadata:
+  name: awx-demo
+spec:
+  service_type: nodeport
+
+== Custom resource definitions shipped (config/crd/bases/) ==
+awx.ansible.com_awxbackups.yaml
+awx.ansible.com_awxmeshingresses.yaml
+awx.ansible.com_awxrestores.yaml
+awx.ansible.com_awxs.yaml
+
+== Lines in the AWX CRD ==
+2054 /home/hatch/workspace/.batch-351-363/scratch-awx/awx-operator-2.19.1/config/crd/bases/awx.ansible.com_awxs.yaml
+
+== Images the installer defaults name (roles/installer/defaults/main.yml) ==
+256:_image: quay.io/ansible/awx
+257:_image_version: "{{ lookup('env', 'DEFAULT_AWX_VERSION') or 'latest' }}"
+258:_redis_image: docker.io/redis
+259:_redis_image_version: 7
+260:_postgres_image: quay.io/sclorg/postgresql-15-c9s
+261:_postgres_image_version: latest
+281:ee_images:
+287:_control_plane_ee_image: "quay.io/ansible/awx-ee:{{ _image_version }}"
+289:_init_container_image: "{{ _control_plane_ee_image.split(':')[0] }}"
+290:_init_container_image_version: "{{ _control_plane_ee_image.split(':')[1] }}"
+292:_init_projects_container_image: quay.io/centos/centos:stream9
+ee_images:
+  - name: "AWX EE (latest)"
+    image: "quay.io/ansible/awx-ee:latest"
+  - name: "AWX EE ({{ _image_version }})"
+    image: "quay.io/ansible/awx-ee:{{ _image_version }}"
+
+
+== Default replicas and resource requests ==
+296:replicas: 1
+297:web_replicas: ''
+298:task_replicas: ''
+task_resource_requirements:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+web_resource_requirements:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+ee_resource_requirements:
+  requests:
+    cpu: 100m
+    memory: 64Mi
+
+# TODO: validate default resource requirements
+
+# Customize CSRF options
+csrf_cookie_secure: False
+postgres_storage_requirements:
+  requests:
+    storage: 8Gi
+postgres_resource_requirements:
+410:projects_persistence: false
+431:projects_storage_size: 8Gi
+432:projects_storage_access_mode: ReadWriteMany
+
+== Deployment and statefulset templates the operator renders ==
+/home/hatch/workspace/.batch-351-363/scratch-awx/awx-operator-2.19.1/roles/installer/templates/deployments/:
+task.yaml.j2
+web.yaml.j2
+
+/home/hatch/workspace/.batch-351-363/scratch-awx/awx-operator-2.19.1/roles/installer/templates/statefulsets/:
+postgres.yaml.j2
+
+== Admin account defaults ==
+215:admin_user: admin
+220:admin_password_secret: ''
+
+== Service / ingress defaults ==
+10:service_type: ClusterIP
+11:ingress_type: none
+
+== Kustomize entry point (config/default/kustomization.yaml, head) ==
+# Adds namespace to all resources.
+namespace: awx
+
+# Value of this field is prepended to the
+# names of all resources, e.g. a deployment named
+# "wordpress" becomes "alices-wordpress".
+# Note that it should also match with the prefix (text before '-') of the namespace
+# field above.
+namePrefix: awx-operator-
+
+# Labels to add to all resources and selectors.
+#labels:
+#- includeSelectors: true
+#  pairs:
+#    someName: someValue
+
+resources:
+- ../crd
+- ../rbac
+- ../manager
+# [PROMETHEUS] To enable prometheus monitor, uncomment all sections with 'PROMETHEUS'.
+#- ../prometheus
+
+# Protect the /metrics endpoint by putting it behind auth.
+# If you want your controller-manager to expose the /metrics
+
+== Sample with resource limits (config/samples/awx_v1beta1_awx_resource_limits.yaml) ==
+---
+apiVersion: awx.ansible.com/v1beta1
+kind: AWX
+metadata:
+  name: awx-with-limits
+spec:
+  task_resource_requirements:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 2000m
+      memory: 4Gi
+  web_resource_requirements:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 1000m
+      memory: 4Gi
+  ee_resource_requirements:
+    requests:
+      cpu: 100m
+      memory: 64Mi
+    limits:
+      cpu: 1000m
+      memory: 4Gi
+  redis_resource_requirements:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 1000m
+      memory: 4Gi
+  rsyslog_resource_requirements:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 1000m
+      memory: 2Gi
+  init_container_resource_requirements:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 1000m
+      memory: 2Gi

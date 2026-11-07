@@ -1,0 +1,31 @@
+site_name: AWX for Mere Mortals
+site_description: A control room for Ansible. Who may run a playbook, when, with which credentials, and the record that it happened, plus the honest fact that the playbook itself is still the thing that runs.
+site_url: https://paulsullivan33-dev.github.io/awx-for-mere-mortals/
+copyright: 'Part of <a href="https://paulsullivan33-dev.github.io/mere-mortals/">For Mere Mortals</a> · Text <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>, code MIT'
+
+# Guides live at the repo root (nice for GitHub browsing).
+# The deploy workflow copies them into docs/ before building.
+theme:
+  name: material
+
+nav:
+  - Home: index.md
+  - What AWX Is: what-awx-is.md
+  - The Moving Parts: the-moving-parts.md
+  - Installing the Pieces You Can Install: installing-the-pieces.md
+  - Your First Playbook Run: your-first-playbook-run.md
+  - Run It Again — Idempotency: run-it-again.md
+  - Projects — Where Playbooks Live: projects.md
+  - Inventories — The Hosts: inventories.md
+  - Credentials — Secrets Without Sharing Them: credentials.md
+  - Job Templates, Surveys and Schedules: job-templates.md
+  - Users, Teams and Roles: users-teams-and-roles.md
+  - The API and the awx Command: the-api-and-awxkit.md
+  - Execution Environments: execution-environments.md
+  - AWX on Kubernetes — The Operator: awx-on-kubernetes.md
+  - Real Jobs: real-jobs.md
+  - The Neighbours: the-neighbours.md
+  - Limits: limits.md
+  - Troubleshooting: troubleshooting.md
+  - Glossary: glossary.md
+  - Writing Criteria: criteria.md
